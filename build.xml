@@ -1,0 +1,54 @@
+<project name="Student" basedir="." default="Clean">
+	<property environment="env"/>
+	
+	<property name="application.name"			 value="ProjectStudent"/>
+	<property name="path.src" 					location="${basedir}/src/ua/mamaiev/firstproject"/>
+	<property name="path.lib" 					location="${basedir}/lib"/>
+	<property name="path.build"					location="${basedir}/out/${application.name}"/>
+	<property name="path.build.class" 			location="${basedir}/out/${application.name}/classes"/>
+	
+	<path id="compile.classpath">
+	 <fileset dir="${path.lib}">
+	 <include name="*.jar"/>
+	 </fileset>
+	 </path>
+	
+	<!-- ================================= 
+          target: Clean              
+         ================================= -->
+    <target name="Clean" description="Clean ${path.build}">
+        <delete dir="${path.build}"/>
+    </target>
+	
+	<!-- ================================= 
+	          target: Compile              
+	         ================================= -->
+	<target name="Compile"
+						description="Compile java classes"
+						depends="Clean">
+		<mkdir dir="${path.build.class}"/>
+			<javac 	srcdir="${path.src}" 
+					destdir="${path.build.class}"
+					source="1.8"
+					target="1.8"
+					includeantruntime="true"
+					debug="yes"
+				classpathref="compile.classpath">
+			</javac>		
+	</target>
+	
+	
+	<!-- ================================= 
+	          target: Create WAR            
+	         ================================= -->
+	<target name="Create WAR" depends="Compile" description="Create war-">
+		<war destfile="${path.build}/${application.name}.war" webxml="${basedir}/web.xml">
+			<classes dir="${path.build.class}" />
+			<lib dir="${path.lib}" includes="servlet-api.jar"/>
+			<fileset dir="${basedir}">
+   				 <include name="**/*.html"/>
+				<include name="**/*.jpg"/>
+			</fileset>
+		</war>
+	</target>
+</project>
